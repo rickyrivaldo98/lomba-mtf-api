@@ -39,8 +39,8 @@ exports.create = (req, res) => {
   });
 
   const dataCabang = new Pengajuan.CabangPengajuan({
-    kota_pengajuan: req.body.kota_pengajuan,
-    detail_pengajuan: req.body.detail_pengajuan,
+    kota_pengajuan: req.body.cabang_kota,
+    detail_pengajuan: req.body.cabang_detail,
   });
 
   const dataTDP = new Pengajuan.PengajuanTDP({
