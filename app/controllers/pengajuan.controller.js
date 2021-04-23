@@ -1,4 +1,6 @@
 const Pengajuan = require("../models/pengajuan.model");
+const path = require("path");
+const sharp = require("sharp");
 
 exports.create = (req, res) => {
   if (!req.body) {
@@ -10,12 +12,13 @@ exports.create = (req, res) => {
     nama: req.body.nama,
     no_hp: req.body.no_hp,
     email: req.body.email,
-    foto_kk: req.body.foto_kk,
-    foto_ktp: req.body.foto_ktp,
-    foto_npwp: req.body.foto_npwp,
-    foto_akte_nikah: req.body.foto_akte_nikah,
-    foto_slip_gaji: req.body.foto_slip_gaji,
-    foto_pbb: req.body.foto_pbb,
+    foto_kk: req.files.foto_kk[0].filename,
+    foto_ktp: req.files.foto_ktp[0].filename,
+    foto_npwp: req.files.foto_npwp[0].filename,
+    foto_akte_nikah: req.files.foto_akte_nikah[0].filename,
+    foto_slip_gaji: req.files.foto_slip_gaji[0].filename,
+    foto_pbb: req.files.foto_pbb[0].filename,
+    foto_selfi: req.files.foto_selfi[0].filename,
   });
   const valueDataCostumer = [
     dataCostumer.nama,
@@ -27,6 +30,7 @@ exports.create = (req, res) => {
     dataCostumer.foto_akte_nikah,
     dataCostumer.foto_slip_gaji,
     dataCostumer.foto_pbb,
+    dataCostumer.foto_selfi,
   ];
 
   const dataAlamat = new Pengajuan.Alamat({
@@ -41,8 +45,11 @@ exports.create = (req, res) => {
 
   const dataTDP = new Pengajuan.PengajuanTDP({
     produk: req.body.produk,
+    acuan_hitung: req.body.acuan_hitung,
     harga_kendaraan: req.body.harga_kendaraan,
     total_dp: req.body.total_dp,
+    angsuran: req.body.angsuran,
+    tenor: req.body.tenor,
     tahun_kendaraan: req.body.tahun_kendaraan,
     area: req.body.area,
     fiducia: req.body.fiducia,
@@ -56,6 +63,7 @@ exports.create = (req, res) => {
   const valueDataPengajuan = [dataPengajuan.kode_referal];
 
   Pengajuan.Costumer.create(valueDataCostumer, (err, data) => {
+    console.log(req.file);
     if (err) {
       res.status(500).send({
         message: err.message || "Ada error ketika memasukkan produk",
@@ -89,6 +97,139 @@ exports.create = (req, res) => {
                             err.message || "Ada error ketika memasukkan produk",
                         });
                       } else {
+                        sharp("./" + req.files.foto_kk[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_kk[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_ktp[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_ktp[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_npwp[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_npwp[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_akte_nikah[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_akte_nikah[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_slip_gaji[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_slip_gaji[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_pbb[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_pbb[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
+                        sharp("./" + req.files.foto_selfi[0].path)
+                          .toBuffer()
+                          .then((data5) => {
+                            sharp(data5)
+                              // .toFormat("png")
+                              // .resize(1080)
+                              .png({ progressive: true, compressionLevel: 5 })
+                              .jpeg({ progressive: true, quality: 50 })
+                              .toFile(
+                                "./" + req.files.foto_selfi[0].path,
+                                (err, info) => {
+                                  console.log("oke");
+                                }
+                              );
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+
                         res.send(data5);
                       }
                     }

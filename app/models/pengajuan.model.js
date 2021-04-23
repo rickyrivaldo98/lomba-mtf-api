@@ -28,8 +28,11 @@ const sql = require("./db");
 
 const PengajuanTDP = function (simulasi) {
   this.produk = simulasi.produk;
+  this.acuan_hitung = simulasi.acuan_hitung;
   this.harga_kendaraan = simulasi.harga_kendaraan;
   this.total_dp = simulasi.total_dp;
+  this.angsuran = simulasi.angsuran;
+  this.tenor = simulasi.tenor;
   this.tahun_kendaraan = simulasi.tahun_kendaraan;
   this.area = simulasi.area;
   this.fiducia = simulasi.fiducia;
@@ -46,6 +49,7 @@ const Costumer = function (costumer) {
   this.foto_akte_nikah = costumer.foto_akte_nikah;
   this.foto_slip_gaji = costumer.foto_slip_gaji;
   this.foto_pbb = costumer.foto_pbb;
+  this.foto_selfi = costumer.foto_selfi;
 };
 
 const Alamat = function (alamat) {
@@ -64,7 +68,7 @@ const Pengajuan = function (pengajuan) {
 
 Costumer.create = (dataCostumer, result) => {
   sql.query(
-    "INSERT INTO costumer (id_alamat, id_cabang_pengajuan, nama, no_hp, email,  foto_kk, foto_ktp, foto_npwp, foto_akte_nikah, foto_slip_gaji, foto_pbb) VALUES ((SELECT IFNULL(MAX(id_alamat), 0) + 1 FROM alamat),(SELECT IFNULL(MAX(id_cabang_pengajuan), 0)+1 FROM cabang_pengajuan),?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO costumer (id_alamat, id_cabang_pengajuan, nama, no_hp, email,  foto_kk, foto_ktp, foto_npwp, foto_akte_nikah, foto_slip_gaji, foto_pbb, foto_selfi) VALUES ((SELECT IFNULL(MAX(id_alamat), 0) + 1 FROM alamat),(SELECT IFNULL(MAX(id_cabang_pengajuan), 0)+1 FROM cabang_pengajuan),?,?,?,?,?,?,?,?,?,?)",
     dataCostumer,
     (err, res) => {
       if (err) {
@@ -91,7 +95,7 @@ Costumer.create = (dataCostumer, result) => {
                     } else {
                       PengajuanTDP.create = (dataTDP, result) => {
                         sql.query(
-                          "INSERT INTO simulasi_tdp SET ?",
+                          "INSERT INTO simulasi SET ?",
                           dataTDP,
                           (err, res4) => {
                             if (err) {
@@ -101,7 +105,7 @@ Costumer.create = (dataCostumer, result) => {
                             } else {
                               Pengajuan.create = (dataPengajuan, result) => {
                                 sql.query(
-                                  "INSERT INTO pengajuan (id_costumer, id_simulasi_tdp, id_simulasi_angsuran, kode_referal) VALUES ((SELECT IFNULL(MAX(id_costumer), 0) + 1 FROM costumer), (SELECT IFNULL(MAX(id_simulasi_tdp), 0) + 1 FROM simulasi_tdp), NULL, ?)",
+                                  "INSERT INTO pengajuan (id_costumer, id_simulasi, id_simulasi_angsuran, kode_referal) VALUES ((SELECT IFNULL(MAX(id_costumer), 0)  FROM costumer), (SELECT IFNULL(MAX(id_simulasi), 0)  FROM simulasi), NULL, ?)",
                                   dataPengajuan,
                                   (err, res5) => {
                                     if (err) {
@@ -112,7 +116,7 @@ Costumer.create = (dataCostumer, result) => {
                                     console.log("simulasi yang masuk:", {
                                       id_pengajuan: res5.insertId,
                                       ...dataPengajuan,
-                                      id_simulasi_tdp: res4.insertId,
+                                      id_simulasi: res4.insertId,
                                       ...dataTDP,
                                       id_cabang_pengajuan: res3.insertId,
                                       ...dataCabang,
