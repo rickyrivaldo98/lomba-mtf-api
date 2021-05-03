@@ -15,7 +15,7 @@ exports.create = (req, res) => {
     foto_kk: req.files.foto_kk[0].filename,
     foto_ktp: req.files.foto_ktp[0].filename,
     foto_npwp: req.files.foto_npwp[0].filename,
-    foto_akte_nikah: req.files.foto_akte_nikah[0].filename,
+    foto_stb: req.files.foto_stb[0].filename,
     foto_slip_gaji: req.files.foto_slip_gaji[0].filename,
     foto_pbb: req.files.foto_pbb[0].filename,
     foto_selfi: req.files.foto_selfi[0].filename,
@@ -27,15 +27,15 @@ exports.create = (req, res) => {
     dataCostumer.foto_kk,
     dataCostumer.foto_ktp,
     dataCostumer.foto_npwp,
-    dataCostumer.foto_akte_nikah,
+    dataCostumer.foto_stb,
     dataCostumer.foto_slip_gaji,
     dataCostumer.foto_pbb,
     dataCostumer.foto_selfi,
   ];
 
   const dataAlamat = new Pengajuan.Alamat({
-    kota: req.body.kota,
-    detail_alamat: req.body.detail_alamat,
+    kota: req.body.alamat_kota,
+    detail_alamat: req.body.alamat_detail,
   });
 
   const dataCabang = new Pengajuan.CabangPengajuan({
@@ -48,6 +48,7 @@ exports.create = (req, res) => {
     acuan_hitung: req.body.acuan_hitung,
     harga_kendaraan: req.body.harga_kendaraan,
     total_dp: req.body.total_dp,
+    pencairan: req.body.pencairan,
     angsuran: req.body.angsuran,
     tenor: req.body.tenor,
     tahun_kendaraan: req.body.tahun_kendaraan,
@@ -61,6 +62,8 @@ exports.create = (req, res) => {
   });
 
   const valueDataPengajuan = [dataPengajuan.kode_referal];
+
+  // const dataTracking = new Pengajuan.InsertTracking({});
 
   Pengajuan.Costumer.create(valueDataCostumer, (err, data) => {
     console.log(req.file);
@@ -97,140 +100,220 @@ exports.create = (req, res) => {
                             err.message || "Ada error ketika memasukkan produk",
                         });
                       } else {
-                        sharp("./" + req.files.foto_kk[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_kk[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                        Pengajuan.InsertTracking.create((err, data6) => {
+                          if (err) {
+                            res.status(500).send({
+                              message:
+                                err.message ||
+                                "Ada error ketika memasukkan produk",
+                            });
+                          } else {
+                            Pengajuan.InsertCustHandle.create((err, data7) => {
+                              if (err) {
+                                res.status(500).send({
+                                  message:
+                                    err.message ||
+                                    "Ada error ketika memasukkan produk",
+                                });
+                              } else {
+                                Pengajuan.InsertPertanyaan.create(
+                                  (err, data8) => {
+                                    if (err) {
+                                      res.status(500).send({
+                                        message:
+                                          err.message ||
+                                          "Ada error ketika memasukkan produk",
+                                      });
+                                    } else {
+                                      sharp("./" + req.files.foto_kk[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" + req.files.foto_kk[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_ktp[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_ktp[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp("./" + req.files.foto_ktp[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" + req.files.foto_ktp[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_npwp[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_npwp[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp("./" + req.files.foto_npwp[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" +
+                                                req.files.foto_npwp[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_akte_nikah[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_akte_nikah[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp("./" + req.files.foto_stb[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" + req.files.foto_stb[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_slip_gaji[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_slip_gaji[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp(
+                                        "./" + req.files.foto_slip_gaji[0].path
+                                      )
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" +
+                                                req.files.foto_slip_gaji[0]
+                                                  .path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_pbb[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_pbb[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp("./" + req.files.foto_pbb[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" + req.files.foto_pbb[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        sharp("./" + req.files.foto_selfi[0].path)
-                          .toBuffer()
-                          .then((data5) => {
-                            sharp(data5)
-                              // .toFormat("png")
-                              // .resize(1080)
-                              .png({ progressive: true, compressionLevel: 5 })
-                              .jpeg({ progressive: true, quality: 50 })
-                              .toFile(
-                                "./" + req.files.foto_selfi[0].path,
-                                (err, info) => {
-                                  console.log("oke");
-                                }
-                              );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
+                                      sharp("./" + req.files.foto_selfi[0].path)
+                                        .toBuffer()
+                                        .then((data8) => {
+                                          sharp(data8)
+                                            // .toFormat("png")
+                                            // .resize(1080)
+                                            .png({
+                                              progressive: true,
+                                              compressionLevel: 5,
+                                            })
+                                            .jpeg({
+                                              progressive: true,
+                                              quality: 50,
+                                            })
+                                            .toFile(
+                                              "./" +
+                                                req.files.foto_selfi[0].path,
+                                              (err, info) => {
+                                                console.log("oke");
+                                              }
+                                            );
+                                        })
+                                        .catch((err) => {
+                                          console.log(err);
+                                        });
 
-                        res.send(data5);
+                                      res.send(data8);
+                                    }
+                                  }
+                                );
+                              }
+                            });
+                          }
+                        });
                       }
                     }
                   );
@@ -323,4 +406,38 @@ exports.create = (req, res) => {
   //   //   else res.send(data);
   //   // });
   // });
+};
+
+exports.getAll = (req, res) => {
+  Pengajuan.Costumer.getAll((err, data) => {
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any costumer.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil costumer",
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+exports.getById_costumer = (req, res) => {
+  Pengajuan.Costumer.getById_costumer(req.params.id_costumer, (err, data) => {
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any costumer.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil costumer",
+        });
+      }
+    } else res.send(data);
+  });
 };

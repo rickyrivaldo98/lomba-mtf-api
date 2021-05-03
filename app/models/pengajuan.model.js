@@ -31,6 +31,7 @@ const PengajuanTDP = function (simulasi) {
   this.acuan_hitung = simulasi.acuan_hitung;
   this.harga_kendaraan = simulasi.harga_kendaraan;
   this.total_dp = simulasi.total_dp;
+  this.pencairan = simulasi.pencairan;
   this.angsuran = simulasi.angsuran;
   this.tenor = simulasi.tenor;
   this.tahun_kendaraan = simulasi.tahun_kendaraan;
@@ -46,7 +47,7 @@ const Costumer = function (costumer) {
   this.foto_kk = costumer.foto_kk;
   this.foto_ktp = costumer.foto_ktp;
   this.foto_npwp = costumer.foto_npwp;
-  this.foto_akte_nikah = costumer.foto_akte_nikah;
+  this.foto_stb = costumer.foto_stb;
   this.foto_slip_gaji = costumer.foto_slip_gaji;
   this.foto_pbb = costumer.foto_pbb;
   this.foto_selfi = costumer.foto_selfi;
@@ -66,9 +67,23 @@ const Pengajuan = function (pengajuan) {
   this.kode_referal = pengajuan.kode_referal;
 };
 
+const InsertTracking = function (track) {
+  this.id_pengajuan = track.id_pengajuan;
+};
+
+const InsertCustHandle = function (handle) {
+  this.id_pengajuan = handle.id_pengajuan;
+};
+
+const InsertPertanyaan = function (pertanyaan) {
+  this.id_cust_handle = pertanyaan.id_cust_handle;
+};
+
+let User;
+
 Costumer.create = (dataCostumer, result) => {
   sql.query(
-    "INSERT INTO costumer (id_alamat, id_cabang_pengajuan, nama, no_hp, email,  foto_kk, foto_ktp, foto_npwp, foto_akte_nikah, foto_slip_gaji, foto_pbb, foto_selfi) VALUES ((SELECT IFNULL(MAX(id_alamat), 0) + 1 FROM alamat),(SELECT IFNULL(MAX(id_cabang_pengajuan), 0)+1 FROM cabang_pengajuan),?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO costumer (id_alamat, id_cabang_pengajuan, nama, no_hp, email,  foto_kk, foto_ktp, foto_npwp, foto_stb, foto_slip_gaji, foto_pbb, foto_selfi) VALUES ((SELECT IFNULL(MAX(id_alamat), 0) + 1 FROM alamat),(SELECT IFNULL(MAX(id_cabang_pengajuan), 0)+1 FROM cabang_pengajuan),?,?,?,?,?,?,?,?,?,?)",
     dataCostumer,
     (err, res) => {
       if (err) {
@@ -112,21 +127,111 @@ Costumer.create = (dataCostumer, result) => {
                                       console.log("error produk:", err);
                                       result(err, null);
                                       return;
+                                    } else {
+                                      InsertTracking.create = (result) => {
+                                        sql.query(
+                                          "INSERT INTO tracking SET id_pengajuan=?",
+                                          [res5.insertId],
+                                          (err, res6) => {
+                                            if (err) {
+                                              console.log("error produk:", err);
+                                              result(err, null);
+                                              return;
+                                            } else {
+                                              InsertCustHandle.create = (
+                                                result
+                                              ) => {
+                                                sql.query(
+                                                  "INSERT INTO cust_handle SET id_pengajuan=?",
+                                                  [res5.insertId],
+                                                  (err, res7) => {
+                                                    if (err) {
+                                                      console.log(
+                                                        "error produk:",
+                                                        err
+                                                      );
+                                                      result(err, null);
+                                                      return;
+                                                    } else {
+                                                      InsertPertanyaan.create = (
+                                                        result
+                                                      ) => {
+                                                        sql.query(
+                                                          "INSERT INTO pertanyaan SET id_cust_handle=?",
+                                                          [res7.insertId],
+                                                          (err, res8) => {
+                                                            if (err) {
+                                                              console.log(
+                                                                "error produk:",
+                                                                err
+                                                              );
+                                                              result(err, null);
+                                                              return;
+                                                            }
+                                                            console.log(
+                                                              "simulasi yang masuk:",
+                                                              {
+                                                                id_cust_handle:
+                                                                  res7.insertId,
+                                                                id_tracking:
+                                                                  res6.insertId,
+                                                                // ...dataTracking,
+                                                                id_pengajuan:
+                                                                  res5.insertId,
+                                                                ...dataPengajuan,
+                                                                id_simulasi:
+                                                                  res4.insertId,
+                                                                ...dataTDP,
+                                                                id_cabang_pengajuan:
+                                                                  res3.insertId,
+                                                                ...dataCabang,
+                                                                id_alamat:
+                                                                  res2.insertId,
+                                                                ...dataAlamat,
+                                                                id_costumer:
+                                                                  res.insertId,
+                                                                ...dataCostumer,
+                                                              }
+                                                            );
+                                                            result(null, {
+                                                              status: "Success",
+                                                              id_pengajuan:
+                                                                res5.insertId,
+                                                              id_costumer:
+                                                                res.insertId,
+                                                              massage:
+                                                                "Data Telah Terkirim",
+                                                            });
+                                                          }
+                                                        );
+                                                      };
+                                                    }
+                                                    result(null, {
+                                                      status: "Success",
+                                                      id_pengajuan:
+                                                        res5.insertId,
+                                                      id_costumer: res.insertId,
+                                                      massage:
+                                                        "Data Telah Terkirim",
+                                                    });
+                                                  }
+                                                );
+                                              };
+                                            }
+                                            result(null, {
+                                              status: "Success",
+                                              id_pengajuan: res5.insertId,
+                                              id_costumer: res.insertId,
+                                              massage: "Data Telah Terkirim",
+                                            });
+                                          }
+                                        );
+                                      };
                                     }
-                                    console.log("simulasi yang masuk:", {
-                                      id_pengajuan: res5.insertId,
-                                      ...dataPengajuan,
-                                      id_simulasi: res4.insertId,
-                                      ...dataTDP,
-                                      id_cabang_pengajuan: res3.insertId,
-                                      ...dataCabang,
-                                      id_alamat: res2.insertId,
-                                      ...dataAlamat,
-                                      id_costumer: res.insertId,
-                                      ...dataCostumer,
-                                    });
                                     result(null, {
-                                      response: true,
+                                      status: "Success",
+                                      id_costumer: res.insertId,
+                                      massage: "Data Telah Terkirim",
                                     });
                                   }
                                 );
@@ -248,4 +353,55 @@ Costumer.create = (dataCostumer, result) => {
   // });
 };
 
-module.exports = { Costumer, Alamat, CabangPengajuan, PengajuanTDP, Pengajuan };
+Costumer.getAll = (result) => {
+  sql.query(
+    "SELECT costumer.nama, tracking.* FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan",
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
+    }
+  );
+};
+
+Costumer.getById_costumer = (id_costumer, result) => {
+  sql.query(
+    `SELECT * FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan INNER JOIN cust_handle ON pengajuan.id_pengajuan= cust_handle.id_pengajuan INNER JOIN pertanyaan ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle INNER JOIN list_pertanyaan ON pertanyaan.id_listPertanyaan=list_pertanyaan.id_listPertanyaan WHERE costumer.id_costumer = "${id_costumer}"`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
+    }
+  );
+};
+
+module.exports = {
+  Costumer,
+  Alamat,
+  CabangPengajuan,
+  PengajuanTDP,
+  Pengajuan,
+  InsertTracking,
+  InsertCustHandle,
+  InsertPertanyaan,
+};

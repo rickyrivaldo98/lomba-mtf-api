@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const nocache = require("nocache");
 
 const app = express();
 const corsOptions = {
@@ -13,6 +14,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(nocache());
+app.disable("view cache");
 
 app.use("/uploads", express.static("./app/uploads"));
 
