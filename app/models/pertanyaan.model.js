@@ -13,6 +13,15 @@ const listPertanyaan = function (pertanyaan) {
 const UpPertanyaan = function (pertanyaan) {
   this.id_listPertanyaan = pertanyaan.id_listPertanyaan;
 };
+const UpJawaban = function (jawaban) {
+  this.jawaban1 = jawaban.jawaban1;
+  this.jawaban2 = jawaban.jawaban2;
+  this.jawaban3 = jawaban.jawaban3;
+};
+
+const Uptgl = function (tgl) {
+  this.tgl_meet = tgl.tgl_meet;
+};
 
 User.getName = (idUser, result) => {
   sql.query(
@@ -79,4 +88,39 @@ UpPertanyaan.update = (dataID, id_cust_handle, result) => {
   );
 };
 
-module.exports = { User, listPertanyaan, UpPertanyaan };
+UpJawaban.updateJawaban = (dataJawaban, id_cust_handle, result) => {
+  sql.query(
+    `UPDATE pertanyaan SET jawaban1 = ?, jawaban2=?, jawaban3=? WHERE id_cust_handle = ${id_cust_handle}`,
+    [dataJawaban.jawaban1, dataJawaban.jawaban2, dataJawaban.jawaban3],
+    (err, res) => {
+      if (err) {
+        console.log("error produk:", err);
+        result(err, null);
+        return;
+      } else {
+        Uptgl.updateTgl = (dataTgl, id_cust_handle, result) => {
+          sql.query(
+            `UPDATE cust_handle SET tgl_meet=? WHERE id_cust_handle = ${id_cust_handle}`,
+            [dataTgl.tgl_meet],
+            (err, res) => {
+              if (err) {
+                console.log("error produk:", err);
+                result(err, null);
+                return;
+              } else {
+                result(null, {
+                  res: res,
+                });
+              }
+            }
+          );
+        };
+      }
+      result(null, {
+        res: res,
+      });
+    }
+  );
+};
+
+module.exports = { User, listPertanyaan, UpPertanyaan, UpJawaban, Uptgl };

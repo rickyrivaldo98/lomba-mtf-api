@@ -441,3 +441,65 @@ exports.getById_costumer = (req, res) => {
     } else res.send(data);
   });
 };
+
+exports.getLink = (req, res) => {
+  Pengajuan.LinkMeet.getLink(req.params.id_cust_handle, (err, data) => {
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any costumer.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil costumer",
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+exports.getByID = (req, res) => {
+  Pengajuan.Cust_handle.getByID(req.params.id_cust_handle, (err, data) => {
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any costumer.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil costumer",
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+exports.Update = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: "isi tidak bisa kosong",
+    });
+  }
+  const dataDigital = new Pengajuan.Cust_handle({
+    status: req.body.status,
+    link_meet: req.body.link_meet,
+    tgl_meet: req.body.tgl_meet,
+    digital_signature: req.body.digital_signature,
+    doc_term: req.body.doc_term,
+    docs_contract: req.body.docs_contract,
+  });
+  Pengajuan.Cust_handle.Update(
+    dataDigital,
+    req.params.id_cust_handle,
+    (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message || "Ada error ketika memasukkan produk",
+        });
+      }
+      res.send(data);
+    }
+  );
+};

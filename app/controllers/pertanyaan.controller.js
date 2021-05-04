@@ -73,3 +73,46 @@ exports.update = (req, res) => {
     }
   );
 };
+
+exports.updateJawaban = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: "isi tidak bisa kosong",
+    });
+  }
+  const dataJawaban = new Pertanyaan.UpJawaban({
+    jawaban1: req.body.jawaban1,
+    jawaban2: req.body.jawaban2,
+    jawaban3: req.body.jawaban3,
+  });
+
+  const dataTgl = new Pertanyaan.Uptgl({
+    tgl_meet: req.body.tgl_meet,
+  });
+
+  Pertanyaan.UpJawaban.updateJawaban(
+    dataJawaban,
+    req.params.id_cust_handle,
+    (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message || "Ada error ketika memasukkan produk",
+        });
+      } else {
+        Pertanyaan.Uptgl.updateTgl(
+          dataTgl,
+          req.params.id_cust_handle,
+          (err, data2) => {
+            if (err) {
+              res.status(500).send({
+                message: err.message || "Ada error ketika memasukkan produk",
+              });
+            } else {
+              res.send(data2);
+            }
+          }
+        );
+      }
+    }
+  );
+};

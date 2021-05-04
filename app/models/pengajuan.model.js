@@ -79,6 +79,21 @@ const InsertPertanyaan = function (pertanyaan) {
   this.id_cust_handle = pertanyaan.id_cust_handle;
 };
 
+const LinkMeet = function (link) {
+  this.link_meet = link.link_meet;
+};
+
+const Cust_handle = function (cust) {
+  this.id_user = cust.id_user;
+  this.id_pengajuan = cust.id_pengajuan;
+  this.status = cust.status;
+  this.link_meet = cust.link_meet;
+  this.tgl_meet = cust.tgl_meet;
+  this.digital_signature = cust.digital_signature;
+  this.doc_term = cust.doc_term;
+  this.docs_contract = cust.docs_contract;
+};
+
 let User;
 
 Costumer.create = (dataCostumer, result) => {
@@ -195,6 +210,8 @@ Costumer.create = (dataCostumer, result) => {
                                                             );
                                                             result(null, {
                                                               status: "Success",
+                                                              id_cust_handle:
+                                                                res7.insertId,
                                                               id_pengajuan:
                                                                 res5.insertId,
                                                               id_costumer:
@@ -395,6 +412,73 @@ Costumer.getById_costumer = (id_costumer, result) => {
   );
 };
 
+LinkMeet.getLink = (id_cust_handle, result) => {
+  sql.query(
+    `SELECT link_meet FROM cust_handle WHERE id_cust_handle = ${id_cust_handle}`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
+    }
+  );
+};
+
+Cust_handle.getByID = (id_cust_handle, result) => {
+  sql.query(
+    `SELECT * FROM cust_handle WHERE id_cust_handle = ${id_cust_handle}`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
+    }
+  );
+};
+
+Cust_handle.Update = (dataDigital, id_cust_handle, result) => {
+  sql.query(
+    `UPDATE cust_handle SET status=?,link_meet=?,tgl_meet=?,digital_signature=?,doc_term=?,docs_contract=? WHERE id_cust_handle = ${id_cust_handle}`,
+    [
+      dataDigital.status,
+      dataDigital.link_meet,
+      dataDigital.tgl_meet,
+      dataDigital.digital_signature,
+      dataDigital.doc_term,
+      dataDigital.docs_contract,
+    ],
+    (err, res) => {
+      if (err) {
+        console.log("error produk:", err);
+        result(err, null);
+        return;
+      } else {
+        result(null, {
+          res: res,
+        });
+      }
+    }
+  );
+};
+
 module.exports = {
   Costumer,
   Alamat,
@@ -404,4 +488,6 @@ module.exports = {
   InsertTracking,
   InsertCustHandle,
   InsertPertanyaan,
+  LinkMeet,
+  Cust_handle,
 };
