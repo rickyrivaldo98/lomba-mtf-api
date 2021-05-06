@@ -1,5 +1,27 @@
 const Pertanyaan = require("../models/pertanyaan.model");
 
+exports.getAll = (req, res) => {
+  Pertanyaan.User2.getAll((err, data) => {
+    // console.log(req.params.idSo, data, err);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found `,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error  ",
+        });
+      }
+      //   console.log(err);
+    } else {
+      res.send(data);
+    }
+    // console.log(err);
+  });
+};
+
 exports.getName = (req, res) => {
   Pertanyaan.User.getName(req.params.idUser, (err, data) => {
     // console.log(req.params.idSo, data, err);

@@ -393,7 +393,11 @@ Costumer.getAll = (result) => {
 
 Costumer.getById_costumer = (id_costumer, result) => {
   sql.query(
-    `SELECT * FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan INNER JOIN cust_handle ON pengajuan.id_pengajuan= cust_handle.id_pengajuan INNER JOIN pertanyaan ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle INNER JOIN list_pertanyaan ON pertanyaan.id_listPertanyaan=list_pertanyaan.id_listPertanyaan WHERE costumer.id_costumer = "${id_costumer}"`,
+    `SELECT * FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer 
+    INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan 
+    INNER JOIN cust_handle ON pengajuan.id_pengajuan= cust_handle.id_pengajuan 
+    INNER JOIN pertanyaan ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle 
+    WHERE costumer.id_costumer = "${id_costumer}"`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);

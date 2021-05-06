@@ -23,9 +23,32 @@ const Uptgl = function (tgl) {
   this.tgl_meet = tgl.tgl_meet;
 };
 
+const User2 = function (user) {
+  this.id_user = user.id_user;
+  this.nama = user.nama;
+};
+
+User2.getAll = (result) => {
+  sql.query("SELECT * FROM user", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("ditemukan: ", {
+      nama: res[0].nama,
+      kontak: res[0].kontak,
+      pertanyaan: res,
+    });
+    result(null, {
+      res: res,
+    });
+  });
+};
+
 User.getName = (idUser, result) => {
   sql.query(
-    `SELECT user.nama, user.no_telp AS kontak, cust_handle.id_pengajuan, list_pertanyaan.pertanyaan1, list_pertanyaan.pertanyaan2, list_pertanyaan.pertanyaan3 FROM pertanyaan INNER JOIN list_pertanyaan ON pertanyaan.id_listPertanyaan=list_pertanyaan.id_listPertanyaan INNER JOIN cust_handle ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle INNER JOIN user ON user.id_user=cust_handle.id_user WHERE cust_handle.id_pengajuan= "${idUser}"`,
+    `SELECT user.id_user, user.nama, user.no_telp AS kontak, cust_handle.id_pengajuan, list_pertanyaan.pertanyaan1, list_pertanyaan.pertanyaan2, list_pertanyaan.pertanyaan3 FROM pertanyaan INNER JOIN list_pertanyaan ON pertanyaan.id_listPertanyaan=list_pertanyaan.id_listPertanyaan INNER JOIN cust_handle ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle INNER JOIN user ON user.id_user=cust_handle.id_user WHERE cust_handle.id_pengajuan= "${idUser}"`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -123,4 +146,11 @@ UpJawaban.updateJawaban = (dataJawaban, id_cust_handle, result) => {
   );
 };
 
-module.exports = { User, listPertanyaan, UpPertanyaan, UpJawaban, Uptgl };
+module.exports = {
+  User,
+  User2,
+  listPertanyaan,
+  UpPertanyaan,
+  UpJawaban,
+  Uptgl,
+};

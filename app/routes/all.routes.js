@@ -1,6 +1,10 @@
+const { User2 } = require("../models/pertanyaan.model");
+
 module.exports = (app) => {
   // const costumer = require("../controllers/costumer.controller");
   const user = require("../controllers/pertanyaan.controller");
+  const user2 = require("../controllers/pertanyaan.controller");
+
   const listPertanyaan = require("../controllers/pertanyaan.controller");
   const UpPertanyaan = require("../controllers/pertanyaan.controller");
   const UpJawaban = require("../controllers/pertanyaan.controller");
@@ -34,7 +38,7 @@ module.exports = (app) => {
     // pengajuan2.create,
     // pengajuan3.create
   );
-
+  app.get("/user", user2.getAll);
   app.get("/costumer", costumer.getAll);
   app.get("/costumer/:id_costumer", costumer.getById_costumer);
   app.get("/linkmeet/:id_cust_handle", LinkMeet.getLink);
@@ -42,6 +46,7 @@ module.exports = (app) => {
   app.put("/cust_handle/:id_cust_handle", Cust_handle.Update);
 
   app.get("/pertanyaan/:idUser", user.getName);
+
   app.post("/pertanyaan", listPertanyaan.create);
   app.put("/pertanyaan/:id_cust_handle", UpPertanyaan.update);
   app.put("/jawaban/:id_cust_handle", UpJawaban.updateJawaban);
