@@ -372,7 +372,7 @@ Costumer.create = (dataCostumer, result) => {
 
 Costumer.getAll = (result) => {
   sql.query(
-    "SELECT costumer.nama, tracking.* FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan",
+    "SELECT costumer.nama, pengajuan.*, cust_handle.*, tracking.* FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan INNER JOIN cust_handle ON cust_handle.id_pengajuan=pengajuan.id_pengajuan",
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -394,9 +394,12 @@ Costumer.getAll = (result) => {
 Costumer.getById_costumer = (id_costumer, result) => {
   sql.query(
     `SELECT * FROM costumer INNER JOIN pengajuan ON costumer.id_costumer=pengajuan.id_costumer 
+    INNER JOIN alamat ON costumer.id_alamat=costumer.id_alamat
+    INNER JOIN cabang_pengajuan ON costumer.id_cabang_pengajuan=cabang_pengajuan.id_cabang_pengajuan
     INNER JOIN tracking ON pengajuan.id_pengajuan=tracking.id_pengajuan 
     INNER JOIN cust_handle ON pengajuan.id_pengajuan= cust_handle.id_pengajuan 
     INNER JOIN pertanyaan ON cust_handle.id_cust_handle=pertanyaan.id_cust_handle 
+    INNER JOIN simulasi ON simulasi.id_simulasi=pengajuan.id_simulasi
     WHERE costumer.id_costumer = "${id_costumer}"`,
     (err, res) => {
       if (err) {

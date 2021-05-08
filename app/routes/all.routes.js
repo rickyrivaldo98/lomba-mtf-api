@@ -1,9 +1,9 @@
-const { User2 } = require("../models/pertanyaan.model");
-
 module.exports = (app) => {
   // const costumer = require("../controllers/costumer.controller");
   const user = require("../controllers/pertanyaan.controller");
   const user2 = require("../controllers/pertanyaan.controller");
+  const authJwt = require("../middlewares/authjwt");
+  const user3 = require("../controllers/user.controller");
 
   const listPertanyaan = require("../controllers/pertanyaan.controller");
   const UpPertanyaan = require("../controllers/pertanyaan.controller");
@@ -63,4 +63,8 @@ module.exports = (app) => {
 
   app.put("/tracking/:id_pengajuan", tracking.update);
   app.get("/tracking/:id_pengajuan", tracking.getByid);
+
+  app.get("/checkUser", authJwt.verifyToken, user3.getAll);
+  app.get("/user/:userNama", user3.getByUser);
+  app.post("/signin", user3.signin);
 };
